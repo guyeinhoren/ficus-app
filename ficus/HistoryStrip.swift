@@ -6,8 +6,8 @@
 import SwiftUI
 
 struct HistoryStrip: View {
-    /// Trees planted per day.
-    let counts: [Int32: Int]
+    /// Focused time per day.
+    let durations: [Int32: TimeInterval]
     let today: Int32
     @Binding var selectedDay: Int32
 
@@ -16,14 +16,15 @@ struct HistoryStrip: View {
     private let labelHeight: CGFloat = 30
     private let topInset: CGFloat = 26
 
-    /// Oldest first; at least two weeks, reaching back to the first recorded tree.
+    /// Today first, then going back; at least two weeks, reaching back to the first recorded tree.
     private var days: [Int32] {
-        let first = counts.keys.min() ?? today
+        let first = durations.keys.min() ?? today
         let span = min(max(Int(today - first) + 1, 14), 365)
-        return (0..<span).map { today - Int32(span - 1 - $0) }
+        return (0..<span).map { today - Int32($0) }
     }
 
-    private var peak: Int { max(counts.values.max() ?? 0, 5) }
+    /// The chart is at least two hours tall, so a short day doesn't look like a full one.
+    private var peak: TimeInterval { max(durations.values.max() ?? 0, 2 * 3600) }
 
     var body: some View {
         let days = days
@@ -33,8 +34,8 @@ struct HistoryStrip: View {
                     DayColumn(
                         day: day,
                         isToday: day == today,
-                        count: counts[day, default: 0],
-                        dotY: dotY(for: counts[day, default: 0]),
+                        duration: durations[day, default: 0],
+                        dotY: dotY(for: durations[day, default: 0]),
                         isSelected: day == selectedDay,
                         height: topInset + plotHeight + labelHeight
                     ) {
@@ -44,24 +45,23 @@ struct HistoryStrip: View {
                 }
             }
             .background { chartLine(days: days) }
-            .scrollTargetLayout()
         }
-        // The strip is drawn left-to-right (oldest → today); it opens on today at the right edge.
+        // Today sits at the left edge and the past extends to the right.
         .environment(\.layoutDirection, .leftToRight)
-        .defaultScrollAnchor(.trailing)
-        .scrollTargetBehavior(.viewAligned)
+        .defaultScrollAnchor(.leading)
+        .contentMargins(.horizontal, 24, for: .scrollContent)
         .frame(height: topInset + plotHeight + labelHeight)
         .sensoryFeedback(.selection, trigger: selectedDay)
     }
 
-    private func dotY(for count: Int) -> CGFloat {
-        topInset + plotHeight * (1 - CGFloat(count) / CGFloat(peak))
+    private func dotY(for duration: TimeInterval) -> CGFloat {
+        topInset + plotHeight * (1 - CGFloat(duration / peak))
     }
 
     private func chartLine(days: [Int32]) -> some View {
         Canvas { context, size in
             let points = days.enumerated().map { index, day in
-                CGPoint(x: (CGFloat(index) + 0.5) * columnWidth, y: dotY(for: counts[day, default: 0]))
+                CGPoint(x: (CGFloat(index) + 0.5) * columnWidth, y: dotY(for: durations[day, default: 0]))
             }
             guard let first = points.first, let last = points.last else { return }
             let baseline = topInset + plotHeight
@@ -98,7 +98,7 @@ struct HistoryStrip: View {
 private struct DayColumn: View {
     let day: Int32
     let isToday: Bool
-    let count: Int
+    let duration: TimeInterval
     let dotY: CGFloat
     let isSelected: Bool
     let height: CGFloat
@@ -108,13 +108,12 @@ private struct DayColumn: View {
 
     var body: some View {
         ZStack {
-            VStack(spacing: 3) {
-                Text("\(count)")
-                    .font(.system(isSelected ? .footnote : .caption, design: .rounded, weight: isSelected ? .bold : .medium))
-                    .foregroundStyle(isSelected ? accent : .secondary)
-                dot
-            }
-            .position(x: 30, y: dotY - (isSelected ? 14 : 10))
+            Text(duration.hoursMinutesString)
+                .font(.system(isSelected ? .footnote : .caption, design: .rounded, weight: isSelected ? .bold : .medium).monospacedDigit())
+                .foregroundStyle(isSelected ? accent : .secondary)
+                .position(x: 30, y: dotY - (isSelected ? 22 : 17))
+
+            dot.position(x: 30, y: dotY)
 
             Text(isToday ? "היום" : Hebrew.weekday(of: Day.date(of: day)))
                 .font(.footnote.weight(isSelected ? .bold : .semibold))
@@ -126,7 +125,7 @@ private struct DayColumn: View {
         .onTapGesture(perform: onTap)
         .accessibilityElement()
         .accessibilityLabel(isToday ? "היום" : Day.date(of: day).formatted(.dateTime.weekday(.wide).day().month()))
-        .accessibilityValue("\(count) עצים")
+        .accessibilityValue("\(duration.hoursMinutesString) שעות")
         .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
     }
 

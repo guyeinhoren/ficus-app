@@ -5,82 +5,124 @@
 //  Created by גיא אינהורן on 14/11/2026.
 //
 
-import WidgetKit
+import ActivityKit
+import AppIntents
 import SwiftUI
-
-struct Provider: TimelineProvider {
-    func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), emoji: "😀")
-    }
-
-    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), emoji: "😀")
-        completion(entry)
-    }
-
-    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [SimpleEntry] = []
-
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, emoji: "😀")
-            entries.append(entry)
-        }
-
-        let timeline = Timeline(entries: entries, policy: .atEnd)
-        completion(timeline)
-    }
-
-//    func relevances() async -> WidgetRelevances<Void> {
-//        // Generate a list containing the contexts this widget is relevant in.
-//    }
-}
-
-struct SimpleEntry: TimelineEntry {
-    let date: Date
-    let emoji: String
-}
-
-struct FicusLiveActivityEntryView : View {
-    var entry: Provider.Entry
-
-    var body: some View {
-        VStack {
-            HStack {
-                Text("Time:")
-                Text(entry.date, style: .time)
-            }
-
-            Text("Emoji:")
-            Text(entry.emoji)
-        }
-    }
-}
+import WidgetKit
 
 struct FicusLiveActivity: Widget {
-    let kind: String = "FicusLiveActivity"
-
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: Provider()) { entry in
-            if #available(macOS 14.0, iOS 17.0, *) {
-                FicusLiveActivityEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
-            } else {
-                FicusLiveActivityEntryView(entry: entry)
-                    .padding()
-                    .background()
+        ActivityConfiguration(for: FocusActivityAttributes.self) { context in
+            LockScreenView(state: context.state, isStale: context.isStale)
+                .padding(16)
+        } dynamicIsland: { context in
+            DynamicIsland {
+                DynamicIslandExpandedRegion(.leading) {
+                    TreeRing(state: context.state).frame(width: 52, height: 52)
+                }
+                DynamicIslandExpandedRegion(.center) {
+                    ClockText(state: context.state, size: 30)
+                }
+                DynamicIslandExpandedRegion(.trailing) {
+                    FinishButton()
+                }
+            } compactLeading: {
+                Image("tree").resizable().scaledToFit().frame(width: 20, height: 20)
+            } compactTrailing: {
+                ClockText(state: context.state, size: 14).frame(width: 44)
+            } minimal: {
+                Image("tree").resizable().scaledToFit().frame(width: 20, height: 20)
             }
+            .keylineTint(.blue)
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
     }
 }
 
-#Preview(as: .systemSmall) {
+// MARK: - Lock Screen
+
+/// Laid out right-to-left: the tree-in-a-ring on the right, the timer beside it, "זהו" on the left.
+private struct LockScreenView: View {
+    let state: FocusActivityAttributes.ContentState
+    let isStale: Bool
+
+    var body: some View {
+        HStack(spacing: 14) {
+            TreeRing(state: state).frame(width: 60, height: 60)
+
+            if isStale {
+                Text("הסתיים").font(.title2.weight(.semibold))
+            } else {
+                ClockText(state: state, size: 40)
+            }
+
+            Spacer(minLength: 0)
+
+            FinishButton()
+        }
+        .environment(\.layoutDirection, .rightToLeft)
+    }
+}
+
+// MARK: - Pieces
+
+/// The tree inside the circle of time. The ring fills on its own, driven by the system clock.
+private struct TreeRing: View {
+    let state: FocusActivityAttributes.ContentState
+
+    var body: some View {
+        ZStack {
+            ProgressView(timerInterval: state.start...state.end, countsDown: false) {
+                EmptyView()
+            } currentValueLabel: {
+                EmptyView()
+            }
+            .progressViewStyle(.circular)
+            .tint(.blue)
+
+            // The tree stays clear of the ring, with a visible gap.
+            Image("tree").resizable().scaledToFit().padding(12)
+        }
+    }
+}
+
+private struct ClockText: View {
+    let state: FocusActivityAttributes.ContentState
+    let size: CGFloat
+
+    var body: some View {
+        Group {
+            if state.isCountdown {
+                Text(timerInterval: state.start...state.end, pauseTime: nil, countsDown: true, showsHours: false)
+            } else {
+                Text(state.start, style: .timer)
+            }
+        }
+        .font(.system(size: size, weight: .medium, design: .rounded).monospacedDigit())
+        .foregroundStyle(.primary)
+        .lineLimit(1)
+        .minimumScaleFactor(0.6)
+        .multilineTextAlignment(.leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct FinishButton: View {
+    var body: some View {
+        Button(intent: FinishFocusIntent()) {
+            Text("זהו")
+                .font(.headline)
+                .foregroundStyle(.white)
+                .padding(.horizontal, 22)
+                .padding(.vertical, 10)
+                .background(.blue, in: .capsule)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+#Preview("Lock Screen", as: .content, using: FocusActivityAttributes()) {
     FicusLiveActivity()
-} timeline: {
-    SimpleEntry(date: .now, emoji: "😀")
-    SimpleEntry(date: .now, emoji: "🤩")
+} contentStates: {
+    FocusActivityAttributes.ContentState(start: .now.addingTimeInterval(-300), end: .now.addingTimeInterval(1200), isCountdown: true)
+    FocusActivityAttributes.ContentState(start: .now.addingTimeInterval(-300), end: .now.addingTimeInterval(900), isCountdown: false)
 }

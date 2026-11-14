@@ -15,6 +15,12 @@ extension TimeInterval {
             : String(format: "%02d:%02d", minutes, seconds)
     }
 
+    /// `h:mm` of whole minutes, e.g. 3 hours 45 minutes is "3:45".
+    var hoursMinutesString: String {
+        let minutes = Int(self) / 60
+        return String(format: "%d:%02d", minutes / 60, minutes % 60)
+    }
+
     /// A natural Hebrew description of a chosen duration: "25 דק׳", "שעה", "שעה ו-5 דק׳", "שעתיים".
     var hebrewLabel: String {
         let seconds = Int(self)

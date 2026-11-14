@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E4F9532330A87E5B00CF2FFD /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4F9532230A87E5B00CF2FFD /* WidgetKit.framework */; };
+		E4F9532530A87E5B00CF2FFD /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4F9532430A87E5B00CF2FFD /* SwiftUI.framework */; };
+		E4F9533030A87E5D00CF2FFD /* FicusLiveActivityExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E4F9532030A87E5B00CF2FFD /* FicusLiveActivityExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		E46C6D142E90E48400B0F2C4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -21,13 +27,48 @@
 			remoteGlobalIDString = E46C6D052E90E48200B0F2C4;
 			remoteInfo = ficus;
 		};
+		E4F9532E30A87E5D00CF2FFD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E46C6CFE2E90E48200B0F2C4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E4F9531F30A87E5B00CF2FFD;
+			remoteInfo = FicusLiveActivityExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E4F9533130A87E5D00CF2FFD /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				E4F9533030A87E5D00CF2FFD /* FicusLiveActivityExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		E46C6D062E90E48200B0F2C4 /* ficus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ficus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E46C6D132E90E48400B0F2C4 /* ficusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ficusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E46C6D1D2E90E48400B0F2C4 /* ficusUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ficusUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4F9532030A87E5B00CF2FFD /* FicusLiveActivityExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FicusLiveActivityExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4F9532230A87E5B00CF2FFD /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
+		E4F9532430A87E5B00CF2FFD /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
+		E4F9534B30A87E8300CF2FFD /* FicusLiveActivityExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FicusLiveActivityExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E4F9533430A87E5D00CF2FFD /* Exceptions for "FicusLiveActivity" folder in "FicusLiveActivityExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E4F9531F30A87E5B00CF2FFD /* FicusLiveActivityExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E46C6D082E90E48200B0F2C4 /* ficus */ = {
@@ -43,6 +84,19 @@
 		E46C6D202E90E48400B0F2C4 /* ficusUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ficusUITests;
+			sourceTree = "<group>";
+		};
+		E4F9532630A87E5B00CF2FFD /* FicusLiveActivity */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E4F9533430A87E5D00CF2FFD /* Exceptions for "FicusLiveActivity" folder in "FicusLiveActivityExtension" target */,
+			);
+			path = FicusLiveActivity;
+			sourceTree = "<group>";
+		};
+		E4F9540030A87E5B00CF2FFD /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -69,15 +123,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E4F9531D30A87E5B00CF2FFD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4F9532530A87E5B00CF2FFD /* SwiftUI.framework in Frameworks */,
+				E4F9532330A87E5B00CF2FFD /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		E46C6CFD2E90E48200B0F2C4 = {
 			isa = PBXGroup;
 			children = (
+				E4F9534B30A87E8300CF2FFD /* FicusLiveActivityExtension.entitlements */,
 				E46C6D082E90E48200B0F2C4 /* ficus */,
 				E46C6D162E90E48400B0F2C4 /* ficusTests */,
 				E46C6D202E90E48400B0F2C4 /* ficusUITests */,
+				E4F9532630A87E5B00CF2FFD /* FicusLiveActivity */,
+				E4F9540030A87E5B00CF2FFD /* Shared */,
+				E4F9532130A87E5B00CF2FFD /* Frameworks */,
 				E46C6D072E90E48200B0F2C4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,8 +155,18 @@
 				E46C6D062E90E48200B0F2C4 /* ficus.app */,
 				E46C6D132E90E48400B0F2C4 /* ficusTests.xctest */,
 				E46C6D1D2E90E48400B0F2C4 /* ficusUITests.xctest */,
+				E4F9532030A87E5B00CF2FFD /* FicusLiveActivityExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E4F9532130A87E5B00CF2FFD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E4F9532230A87E5B00CF2FFD /* WidgetKit.framework */,
+				E4F9532430A87E5B00CF2FFD /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -102,13 +179,16 @@
 				E46C6D022E90E48200B0F2C4 /* Sources */,
 				E46C6D032E90E48200B0F2C4 /* Frameworks */,
 				E46C6D042E90E48200B0F2C4 /* Resources */,
+				E4F9533130A87E5D00CF2FFD /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				E4F9532F30A87E5D00CF2FFD /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				E46C6D082E90E48200B0F2C4 /* ficus */,
+				E4F9540030A87E5B00CF2FFD /* Shared */,
 			);
 			name = ficus;
 			packageProductDependencies = (
@@ -163,6 +243,29 @@
 			productReference = E46C6D1D2E90E48400B0F2C4 /* ficusUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		E4F9531F30A87E5B00CF2FFD /* FicusLiveActivityExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E4F9533530A87E5D00CF2FFD /* Build configuration list for PBXNativeTarget "FicusLiveActivityExtension" */;
+			buildPhases = (
+				E4F9531C30A87E5B00CF2FFD /* Sources */,
+				E4F9531D30A87E5B00CF2FFD /* Frameworks */,
+				E4F9531E30A87E5B00CF2FFD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				E4F9532630A87E5B00CF2FFD /* FicusLiveActivity */,
+				E4F9540030A87E5B00CF2FFD /* Shared */,
+			);
+			name = FicusLiveActivityExtension;
+			packageProductDependencies = (
+			);
+			productName = FicusLiveActivityExtension;
+			productReference = E4F9532030A87E5B00CF2FFD /* FicusLiveActivityExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -170,7 +273,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2600;
+				LastSwiftUpdateCheck = 2720;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					E46C6D052E90E48200B0F2C4 = {
@@ -184,13 +287,16 @@
 						CreatedOnToolsVersion = 26.0.1;
 						TestTargetID = E46C6D052E90E48200B0F2C4;
 					};
+					E4F9531F30A87E5B00CF2FFD = {
+						CreatedOnToolsVersion = 27.2;
+					};
 				};
 			};
 			buildConfigurationList = E46C6D012E90E48200B0F2C4 /* Build configuration list for PBXProject "ficus" */;
-			developmentRegion = en;
+			developmentRegion = he;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
+				he,
 				Base,
 			);
 			mainGroup = E46C6CFD2E90E48200B0F2C4;
@@ -203,6 +309,7 @@
 				E46C6D052E90E48200B0F2C4 /* ficus */,
 				E46C6D122E90E48400B0F2C4 /* ficusTests */,
 				E46C6D1C2E90E48400B0F2C4 /* ficusUITests */,
+				E4F9531F30A87E5B00CF2FFD /* FicusLiveActivityExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -223,6 +330,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E46C6D1B2E90E48400B0F2C4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E4F9531E30A87E5B00CF2FFD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -253,6 +367,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E4F9531C30A87E5B00CF2FFD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -265,6 +386,11 @@
 			isa = PBXTargetDependency;
 			target = E46C6D052E90E48200B0F2C4 /* ficus */;
 			targetProxy = E46C6D1E2E90E48400B0F2C4 /* PBXContainerItemProxy */;
+		};
+		E4F9532F30A87E5D00CF2FFD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E4F9531F30A87E5B00CF2FFD /* FicusLiveActivityExtension */;
+			targetProxy = E4F9532E30A87E5D00CF2FFD /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -393,13 +519,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ficus/ficus.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4W4M8V2959;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UIBackgroundModes = "remote-notification";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -408,8 +537,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = focal.ficus;
+				PRODUCT_BUNDLE_IDENTIFIER = ficus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -425,13 +555,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ficus/ficus.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4W4M8V2959;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UIBackgroundModes = "remote-notification";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -440,8 +573,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = focal.ficus;
+				PRODUCT_BUNDLE_IDENTIFIER = ficus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -532,6 +666,92 @@
 			};
 			name = Release;
 		};
+		E4F9533230A87E5D00CF2FFD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = FicusLiveActivityExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4W4M8V2959;
+				ENABLE_APP_SANDBOX = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FicusLiveActivity/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FicusLiveActivity;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 27.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ficus.FicusLiveActivity;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 27.2;
+			};
+			name = Debug;
+		};
+		E4F9533330A87E5D00CF2FFD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = FicusLiveActivityExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4W4M8V2959;
+				ENABLE_APP_SANDBOX = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FicusLiveActivity/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FicusLiveActivity;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 27.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ficus.FicusLiveActivity;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 27.2;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -567,6 +787,15 @@
 			buildConfigurations = (
 				E46C6D2E2E90E48400B0F2C4 /* Debug */,
 				E46C6D2F2E90E48400B0F2C4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E4F9533530A87E5D00CF2FFD /* Build configuration list for PBXNativeTarget "FicusLiveActivityExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4F9533230A87E5D00CF2FFD /* Debug */,
+				E4F9533330A87E5D00CF2FFD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

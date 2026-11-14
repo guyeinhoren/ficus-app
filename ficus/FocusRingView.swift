@@ -16,7 +16,7 @@ struct FocusRingView: View {
 
             Circle()
                 .trim(from: 0, to: progress)
-                .stroke(Palette.focusGradient, style: StrokeStyle(lineWidth: 6, lineCap: .round))
+                .stroke(Color.blue, style: StrokeStyle(lineWidth: 6, lineCap: .round))
                 .rotationEffect(.degrees(-90))
 
             Image("tree")
@@ -28,7 +28,6 @@ struct FocusRingView: View {
                 .scaleEffect(breathing ? 1.05 : 1, anchor: .bottom)
         }
         .frame(width: 250, height: 250)
-        .animation(.smooth, value: progress)
         .onAppear {
             withAnimation(.easeInOut(duration: 2).repeatForever()) { breathing = true }
         }

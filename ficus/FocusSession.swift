@@ -24,7 +24,8 @@ struct FocusRun: Codable, Equatable {
 
     /// The number shown on the clock: time left when counting down, time passed when counting up.
     func displayedTime(at date: Date) -> TimeInterval {
-        isCountdown ? remaining(at: date) : elapsed(at: date)
+        // Rounded up so a countdown shows its full length first and reaches 0 exactly when it ends.
+        isCountdown ? remaining(at: date).rounded(.up) : elapsed(at: date)
     }
 }
 
@@ -53,6 +54,7 @@ final class FocusSession {
         run = new
         persist()
         startActivity(for: new)
+        AppBlocker.block()
         if isCountdown && notifyOnFinish { scheduleFinishNotification(at: new.end) }
     }
 
@@ -62,6 +64,7 @@ final class FocusSession {
         defer {
             run = nil
             persist()
+            AppBlocker.unblock()
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [Self.notificationID])
             let ending = activity
             activity = nil
@@ -111,8 +114,8 @@ enum FocusChime {
 
     static func play() {
         guard let url = Bundle.main.url(forResource: "finish_chime", withExtension: "caf") else { return }
-        // `.ambient` respects the silent switch and mixes with other audio.
-        try? AVAudioSession.sharedInstance().setCategory(.ambient)
+        // Like the Clock timer, it plays even with the silent switch on, and mixes with other audio.
+        try? AVAudioSession.sharedInstance().setCategory(.playback, options: .mixWithOthers)
         try? AVAudioSession.sharedInstance().setActive(true)
         player = try? AVAudioPlayer(contentsOf: url)
         player?.play()

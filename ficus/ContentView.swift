@@ -22,7 +22,7 @@ struct ContentView: View {
 
     @State private var today = Day.today
     @State private var shownDay = Day.today
-    @State private var selectedDuration: TimeInterval = 30
+    @State private var selectedDuration: TimeInterval = 5 * 60
     @State private var showCompletion = false
     @State private var showAbandonAlert = false
     @State private var showSettings = false
@@ -66,6 +66,10 @@ struct ContentView: View {
         // Countdown sessions finish on their own; this survives suspension because it is date-based.
         .task(id: session.run) { await watchCountdown() }
         .task { await watchCalendarDay() }
+        .onAppear {
+            // 30 seconds used to be an option; move anyone who had it chosen to the new minimum.
+            if minTreeSeconds < 5 * 60 { minTreeSeconds = 5 * 60 }
+        }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { refreshDay() }
         }
@@ -80,7 +84,7 @@ struct ContentView: View {
 
     private func home(byDay: [Int32: [Tree]], shownTrees: [Tree]) -> some View {
         VStack(spacing: 0) {
-            topArea(counts: byDay.mapValues(\.count))
+            topArea(durations: byDay.mapValues { $0.reduce(0) { $0 + TimeInterval($1.seconds) } })
 
             Spacer()
 
@@ -91,7 +95,7 @@ struct ContentView: View {
 
             Group {
                 if let run = session.run {
-                    TimelineView(.periodic(from: .now, by: 0.5)) { timeline in
+                    TimelineView(.animation) { timeline in
                         FocusRingView(progress: run.progress(at: timeline.date))
                     }
                     .transition(.scale.combined(with: .opacity))
@@ -111,19 +115,22 @@ struct ContentView: View {
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             }
 
+            // Same slot for "פוקוס" and "זהו", so the button doesn't jump between the two screens.
             mainButton
+                .frame(height: 72)
                 .padding(.bottom, 20)
 
-            if !isRunning {
-                Button("הגדרות") { showSettings = true }
-                    .font(.headline)
-                    .buttonStyle(.glass)
-                    .buttonBorderShape(.capsule)
-                    .controlSize(.large)
-                    .tint(Palette.navy)
-                    .padding(.bottom, 24)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-            }
+            // Kept (invisible) while running so the main button stays at the same height.
+            Button("הגדרות") { showSettings = true }
+                .font(.headline)
+                .buttonStyle(.glass)
+                .buttonBorderShape(.capsule)
+                .controlSize(.large)
+                .tint(.primary)
+                .padding(.bottom, 24)
+                .opacity(isRunning ? 0 : 1)
+                .disabled(isRunning)
+                .accessibilityHidden(isRunning)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background {
@@ -132,12 +139,13 @@ struct ContentView: View {
         }
         .animation(.spring(response: 0.6, dampingFraction: 0.8), value: isRunning)
         .animation(.spring(response: 0.6, dampingFraction: 0.8), value: countdownMode)
+        .animation(.smooth(duration: 0.5), value: showHistory)
     }
 
     @ViewBuilder
-    private func topArea(counts: [Int32: Int]) -> some View {
+    private func topArea(durations: [Int32: TimeInterval]) -> some View {
         if !isRunning && showHistory {
-            HistoryStrip(counts: counts, today: today, selectedDay: $shownDay)
+            HistoryStrip(durations: durations, today: today, selectedDay: $shownDay)
                 .padding(.top, 12)
                 .padding(.bottom, 8)
                 .transition(.move(edge: .top).combined(with: .opacity))
@@ -149,12 +157,12 @@ struct ContentView: View {
     @ViewBuilder
     private func headline(treeCount: Int) -> some View {
         if let run = session.run {
-            TimelineView(.periodic(from: .now, by: 0.25)) { timeline in
+            TimelineView(.periodic(from: run.start, by: 1)) { timeline in
                 Text(run.displayedTime(at: timeline.date).clockString)
                     .font(.system(size: 82, weight: .medium, design: .rounded).monospacedDigit())
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
-                    .foregroundStyle(LinearGradient(colors: [Palette.sky, Palette.navy], startPoint: .top, endPoint: .bottom))
+                    .foregroundStyle(.blue)
             }
             .transition(.scale.combined(with: .opacity))
         } else {
@@ -177,11 +185,14 @@ struct ContentView: View {
     @ViewBuilder
     private var mainButton: some View {
         if isRunning {
-            Button("זהו", action: finishTapped)
-                .font(.title2.weight(.bold))
-                .buttonStyle(.glass)
-                .tint(Palette.blue)
-                .padding(.horizontal, 32)
+            Button(action: finishTapped) {
+                Text("זהו")
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(.primary)
+                    .frame(width: 92, height: 44)
+                    .glassEffect(.regular.interactive(), in: .capsule)
+            }
+            .buttonStyle(.plain)
         } else {
             Button(action: start) {
                 Text("פוקוס")
@@ -190,18 +201,21 @@ struct ContentView: View {
                     .padding(.vertical, 6)
             }
             .buttonStyle(.glassProminent)
-            .tint(Palette.blue)
+            .tint(.blue)
         }
     }
 
     // MARK: Actions
 
     private func start() {
+        let chimes = countdownMode && soundOnFinish
         session.start(
             duration: countdownMode ? selectedDuration : minTreeSeconds,
             isCountdown: countdownMode,
-            notifyOnFinish: soundOnFinish
+            notifyOnFinish: chimes
         )
+        // Needed for the chime to play when the app is closed; asks only the first time.
+        if chimes { Task { await FocusSession.requestNotificationAuthorization() } }
     }
 
     /// "זהו": plant if the tree has been earned, otherwise ask before giving up.
@@ -215,9 +229,11 @@ struct ContentView: View {
     }
 
     private func plantTree(chime: Bool) {
-        guard session.end() != nil else { return }
+        guard let run = session.end() else { return }
         let slot = trees.filter { $0.day == today }.count
-        modelContext.insert(Tree(day: today, slot: slot, position: Island.spawnPoint(slot: slot)))
+        // A countdown counts its chosen length even if the app was reopened late.
+        let focused = run.isCountdown ? run.target : run.elapsed(at: .now)
+        modelContext.insert(Tree(day: today, slot: slot, position: Island.spawnPoint(slot: slot), seconds: focused))
         if chime { FocusChime.play() }
 
         withAnimation(.spring(response: 0.85, dampingFraction: 0.78)) {

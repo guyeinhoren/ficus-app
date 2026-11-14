@@ -22,9 +22,12 @@ final class Tree {
     var y: Int16 = 0
     /// Index into the tree catalog; 0 is the oak.
     var species: Int16 = 0
+    /// Time spent focusing to grow this tree; 0 for trees planted before this was recorded.
+    var seconds: Int32 = 0
 
-    init(day: Int32, slot: Int, position: CGPoint, species: Int = 0) {
+    init(day: Int32, slot: Int, position: CGPoint, species: Int = 0, seconds: TimeInterval = 0) {
         self.day = day
+        self.seconds = Int32(clamping: Int(seconds.rounded()))
         self.slot = Int16(clamping: slot)
         self.species = Int16(clamping: species)
         self.x = Int16(clamping: Int(position.x.rounded()))
